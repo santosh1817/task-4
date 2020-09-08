@@ -7,7 +7,13 @@ import './app.css';
 import CreateReservation from './Components/Reservation/CreateReservation'
 import ListReservation from './Components/Reservation/ListReservation'
 import Home from './Components/Home/Home'
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import  {logoutUser}  from './actions/userActions';
+import Logout from './Components/User/Logout'
 
+import store from './store';
+import { Provider } from 'react-redux';
 
 class App extends React.Component{
   constructor(props) {
@@ -33,6 +39,7 @@ class App extends React.Component{
 
   render() {
     return(
+      <Provider store={store}>
       <BrowserRouter>
       
         <div className="container">
@@ -71,31 +78,25 @@ class App extends React.Component{
               return <Login {...props} handleAuthentication={this.handleAuthentication} />
           }} />
 
-          
+          <Route path="/users/logout" render={(props) => {
+              return <Logout {...props} handleAuthentication={this.handleAuthentication} />
+          }} />
 
-
-
-
-          <Route path="http://localhost:3005/users/logout" render={(props) => {
-              axios.delete('/users/logout', {
-                headers: {
-                  'x-auth': localStorage.getItem('token')
-                }
-                })
-                .then(response => {
-                
-                  props.history.push('/users/login')
-                  this.setState(() => ({
-                    isAuthenticated: false
-                  }))
-                  localStorage.removeItem('token')
-                })
-              }} />
         </Switch>
+       
+       
         </div>
+          
+        
       </BrowserRouter>  
+      
+      
+      </Provider>
     )
+    
   }
 }
 
+
 export default App;
+//export default connect(mapStateToProps, { logoutUser })(App);

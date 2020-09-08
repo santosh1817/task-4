@@ -5,11 +5,16 @@ import "react-toastify/dist/ReactToastify.css";
 import { Col, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './reservation.css';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import  {fetchUser}  from '../../actions/userActions';
 
 class CreateReservation extends Component {
+    
+    
 
-    constructor(){
-        super()
+    constructor(props){
+        super(props)
         this.state={
             service:'',
             servicesArray:['Hair Cut','Face Wash','Face-De-Tan','Make-Up'],
@@ -26,6 +31,13 @@ class CreateReservation extends Component {
         }
         
     }
+
+    componentWillMount() {
+        //console.log('hh',fetchUser())
+        this.props.fetchUser();
+        //fetchUser()
+    }
+
     errMessage=()=>{
         if(
             this.state.service ==="" &&  
@@ -39,21 +51,27 @@ class CreateReservation extends Component {
         }
     }
     componentDidMount(){
-        axios.get('http://localhost:3005/users/loggedinuser',{
-            headers:{
-                'x-auth':localStorage.getItem('token')
-            }
-        })
+        // axios.get('http://localhost:3005/users/loggedinuser',{
+        //     headers:{
+        //         'x-auth':localStorage.getItem('token')
+        //     }
+        // })
 
-        .then((response)=>{
-            this.setState(()=>({
-                loggedInUserId:response.data._id
-            }))
-        })
+        // .then((response)=>{
+        //     this.setState(()=>({
+        //         loggedInUserId:response.data._id
+        //     }))
+        // })
 
 
-        .catch(err=>console.log(err))
+        // .catch(err=>console.log(err))
+        //console.log('hh',fetchUser())
+        
+
     }
+
+    
+
   
     handleChange=(e)=>{
         e.persist()
@@ -168,6 +186,7 @@ class CreateReservation extends Component {
         return (
             
             <div>
+                
                 <h1 className="pt-3">Reservation form</h1>
                 <ToastContainer />
                 <div className="col-md-8">
@@ -284,4 +303,14 @@ class CreateReservation extends Component {
         )
     }
 }
-export default CreateReservation
+
+CreateReservation.propTypes = {
+    fetchUser: PropTypes.func.isRequired,
+    //user: PropTypes.array.isRequired,
+    //newPost: PropTypes.object
+};
+  
+const mapStateToProps = state => ({
+    user: state.user.item
+});
+export default connect(mapStateToProps, { fetchUser })(CreateReservation);
